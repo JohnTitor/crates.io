@@ -93,7 +93,7 @@ fn new_crate_owner() {
 
     // Add the second user as an owner
     let user2 = app.db_new_user("bar");
-    token.add_user_owner("foo_owner", user2.as_model());
+    token.add_user_owner("foo_owner", "bar");
 
     // accept invitation for user to be added as owner
     let crate_id = app.db(|conn| Crate::by_name("foo_owner").first::<Crate>(conn).unwrap().id);
@@ -118,7 +118,7 @@ fn create_and_add_owner(
     krate: &Crate,
 ) -> MockCookieUser {
     let user = app.db_new_user(username);
-    token.add_user_owner(&krate.name, user.as_model());
+    token.add_user_owner(&krate.name, username);
     user.accept_ownership_invitation(&krate.name, krate.id);
     user
 }
@@ -300,7 +300,7 @@ fn invitations_list() {
     let krate = app.db(|conn| CrateBuilder::new("invited_crate", owner.id).expect_build(conn));
 
     let user = app.db_new_user("invited_user");
-    token.add_user_owner("invited_crate", user.as_model());
+    token.add_user_owner("invited_crate", "invited_user");
 
     let json = user.list_invitations();
     assert_eq!(json.crate_owner_invitations.len(), 1);
@@ -326,7 +326,7 @@ fn test_accept_invitation() {
     let krate = app.db(|conn| CrateBuilder::new("accept_invitation", owner.id).expect_build(conn));
 
     // Invite a new owner
-    owner_token.add_user_owner("accept_invitation", invited_user.as_model());
+    owner_token.add_user_owner("accept_invitation", "user_bar");
 
     // New owner accepts the invitation
     invited_user.accept_ownership_invitation(&krate.name, krate.id);
@@ -353,7 +353,7 @@ fn test_decline_invitation() {
     let krate = app.db(|conn| CrateBuilder::new("decline_invitation", owner.id).expect_build(conn));
 
     // Invite a new owner
-    owner_token.add_user_owner("decline_invitation", invited_user.as_model());
+    owner_token.add_user_owner("decline_invitation", "user_bar");
 
     // Invited user declines the invitation
     invited_user.decline_ownership_invitation(&krate.name, krate.id);
