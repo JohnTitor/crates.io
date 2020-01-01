@@ -71,7 +71,7 @@ impl Owner {
             )?))
         } else {
             users::table
-                .filter(users::gh_login.eq(name))
+                .filter(crate::lower(users::gh_login).eq(name.to_lowercase()))
                 .first(conn)
                 .map(Owner::User)
                 .map_err(|_| cargo_err(&format_args!("could not find user with login `{}`", name)))
