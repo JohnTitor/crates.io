@@ -8,7 +8,7 @@ use crate::controllers::frontend_prelude::*;
 
 use crate::models::VersionOwnerAction;
 use crate::schema::*;
-use crate::views::{EncodableDependency, EncodablePublicUser, EncodableVersion};
+use crate::views::{EncodableDependency, EncodableVersion};
 
 use super::version_and_crate;
 
@@ -43,12 +43,8 @@ pub fn authors(req: &mut dyn Request) -> AppResult<Response> {
         .order(version_authors::name)
         .load(&*conn)?;
 
-    // It was imagined that we wold associate authors with users.
-    // This was never implemented. This complicated return struct
-    // is all that is left, hear for backwards compatibility.
     #[derive(Serialize)]
     struct R {
-        users: Vec<EncodablePublicUser>,
         meta: Meta,
     }
     #[derive(Serialize)]
@@ -56,7 +52,6 @@ pub fn authors(req: &mut dyn Request) -> AppResult<Response> {
         names: Vec<String>,
     }
     Ok(req.json(&R {
-        users: vec![],
         meta: Meta { names },
     }))
 }
