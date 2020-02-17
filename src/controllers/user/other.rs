@@ -9,7 +9,7 @@ use crate::views::EncodablePublicUser;
 pub fn show(req: &mut dyn Request) -> AppResult<Response> {
     use self::users::dsl::{gh_login, id, users};
 
-    let name = &req.params()["user_id"].to_lowercase();
+    let name = crate::lower(&req.params()["user_id"]);
     let conn = req.db_conn()?;
     let user = users
         .filter(crate::lower(gh_login).eq(name))
