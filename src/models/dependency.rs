@@ -90,7 +90,7 @@ pub fn add_dependencies(
             let krate = Crate::by_exact_name(&dep.name)
                 .first::<Crate>(&*conn)
                 .map_err(|_| cargo_err(&format_args!("no known crate named `{}`", &*dep.name)))?;
-            if dep.version_req == semver::VersionReq::parse("*").unwrap() {
+            if dep.version_req == semver::VersionReq::parse_compat("*", semver::Compat::Cargo).unwrap() {
                 return Err(cargo_err(
                     "wildcard (`*`) dependency constraints are not allowed \
                      on crates.io. See https://doc.rust-lang.org/cargo/faq.html#can-\

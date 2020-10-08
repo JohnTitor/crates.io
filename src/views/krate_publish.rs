@@ -151,7 +151,7 @@ impl<'de> Deserialize<'de> for EncodableCrateVersion {
 impl<'de> Deserialize<'de> for EncodableCrateVersionReq {
     fn deserialize<D: Deserializer<'de>>(d: D) -> Result<EncodableCrateVersionReq, D::Error> {
         let s = String::deserialize(d)?;
-        match semver::VersionReq::parse(&s) {
+        match semver::VersionReq::parse_compat(&s, semver::Compat::Cargo) {
             Ok(v) => Ok(EncodableCrateVersionReq(v)),
             Err(..) => {
                 let value = de::Unexpected::Str(&s);

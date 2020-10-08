@@ -537,7 +537,9 @@ impl DependencyBuilder {
             name: name.to_string(),
             registry: None,
             explicit_name_in_toml: None,
-            version_req: u::EncodableCrateVersionReq(semver::VersionReq::parse(">= 0").unwrap()),
+            version_req: u::EncodableCrateVersionReq(
+                semver::VersionReq::parse_compat(">= 0", semver::Compat::Cargo).unwrap(),
+            ),
         }
     }
 
@@ -561,7 +563,7 @@ impl DependencyBuilder {
     #[track_caller]
     pub fn version_req(mut self, version_req: &str) -> Self {
         self.version_req = u::EncodableCrateVersionReq(
-            semver::VersionReq::parse(version_req)
+            semver::VersionReq::parse_compat(version_req, semver::Compat::Cargo)
                 .expect("version req isn't a valid semver::VersionReq"),
         );
         self
