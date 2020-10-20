@@ -12,7 +12,12 @@ on:
 jobs:
   frontend:
     name: Frontend
-    runs-on: ubuntu-18.04
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-18.04
+          - macos-10.15
     env:
       JOBS: 1 # See https://git.io/vdao3 for details.
 
@@ -47,7 +52,7 @@ jobs:
 
   backend:
     name: Backend
-    runs-on: ubuntu-16.04
+    runs-on: ${{ matrix.os }}
     strategy:
       # TODO: [ci] should be true if GitHub Actions supports ""allow failures" on matrix
       fail-fast: false
@@ -55,6 +60,9 @@ jobs:
         rust:
           - stable
           - beta
+        os:
+          - ubuntu-16.04
+          - macos-10.15
 
     env:
       RUST_BACKTRACE: 1
